@@ -29,9 +29,10 @@ Vue.component('product', {
         <div class="product-info">
             <h1>{{ title }}</h1>
             <p>{{ description }}</p>
-            <p v-if="inStock">In stock</p>
-            <p v-else style="text-decoration: line-through">Out of Stock</p>
             <a v-bind:href="link">More products like this</a> <br>
+            <p v-if="inStock">In stock</p>
+            <p v-else-if="inStock <= 10 && inStock > 0">Almost sold out!</p>
+            <p v-else style="text-decoration: line-through">Out of Stock</p>
             <span v-if="onSale">ON SALE</span>
             
             <span v-else="onSale"></span> 
@@ -292,6 +293,12 @@ Vue.component('info-tabs', {
     }
   }
 })
+
+
+Vue.component('message',{
+  
+})
+
 
 
 let app = new Vue({
