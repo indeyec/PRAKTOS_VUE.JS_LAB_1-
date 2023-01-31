@@ -13,6 +13,15 @@ Vue.component('product-details', {
       `
 })
 
+new Vue('message',{
+  el:'#mes',
+  methods:{
+    addToCart: function(message) {
+      alert(message)
+    }
+  }
+})
+
 Vue.component('product', {
         props: {
             premium: {
@@ -42,10 +51,11 @@ Vue.component('product', {
             <div class="color-box" v-for="(variant, index) in variants" :key="variant.variantId" :style="{ backgroundColor:variant.variantColor }" @mouseover="updateProduct(index)">
             
             </div>
-            <button v-on:click="addToCart"
-             :disabled="!inStock"
+            <div id ="mes">
+            <button v-on:click="addToCart":disabled="!inStock"
               :class="{ disabledButton: !inStock }"> Add to cart </button><br>
             <button v-on:click="removeToCart">Remove from cart</button>
+            </div>
         </div>
         
             <product-tabs :reviews="reviews"></product-tabs>
@@ -293,12 +303,6 @@ Vue.component('info-tabs', {
     }
   }
 })
-
-
-Vue.component('message',{
-  
-})
-
 
 
 let app = new Vue({
