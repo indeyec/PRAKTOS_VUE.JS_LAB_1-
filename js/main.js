@@ -13,15 +13,6 @@ Vue.component('product-details', {
       `
 })
 
-new Vue('message',{
-  el:'#mes',
-  methods:{
-    addToCart: function(message) {
-      alert(message)
-    }
-  }
-})
-
 Vue.component('product', {
         props: {
             premium: {
@@ -29,7 +20,6 @@ Vue.component('product', {
                 required: true
             }
         },
-
         template: `
 	<div class="product">
         <div class="product-image">
@@ -49,15 +39,15 @@ Vue.component('product', {
             <div v-for="size in sizes">{{size}}</div>      
             <info-tabs :shipping="shipping" :details="details"></info-tabs> 
             <div class="color-box" v-for="(variant, index) in variants" :key="variant.variantId" :style="{ backgroundColor:variant.variantColor }" @mouseover="updateProduct(index)">
-            
             </div>
             <div id ="mes">
-            <button v-on:click="addToCart":disabled="!inStock"
+            <button 
+            v-on:click="addToCart":disabled="!inStock"
               :class="{ disabledButton: !inStock }"> Add to cart </button><br>
-            <button v-on:click="removeToCart">Remove from cart</button>
+            <button 
+            v-on:click="removeToCart">Remove from cart</button>
             </div>
         </div>
-        
             <product-tabs :reviews="reviews"></product-tabs>
         </div>
  `,
@@ -93,17 +83,17 @@ Vue.component('product', {
         methods: {
             addToCart() {
                 this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId);
+                //this.variant[this.selectedVariant].variantQuantity -=1;
+                eventBus.$emit('on-message', 'добавил')
             },
-
             updateProduct(index) {
                 this.selectedVariant = index;
                 console.log(index);
             },
-
             removeToCart() {
                 this.$emit('remove-to-cart', this.variants[this.selectedVariant].variantId)
+                eventBus.$emit('on-message', 'удалил')
             },
-
         },
         computed: {
             title() {
@@ -115,7 +105,6 @@ Vue.component('product', {
             inStock() {
                 return this.variants[this.selectedVariant].variantQuantity
             },
-
             shipping() {
                 if (this.premium) {
                     return "Free";
@@ -123,7 +112,6 @@ Vue.component('product', {
                     return 2.99
                 }
             },
-
             sale() {
                 if (this.onSale) {
                     return this.brand + ' ' + this.product + ' are on sale'
@@ -136,24 +124,37 @@ Vue.component('product', {
                 this.reviews.push(productReview)
             })
         }
-
     },
-
+    Vue.component('message',{
+      template:`
+    <div class="message">
+        <p>{{ message }}</p> 
+    </div>
+      `,
+        mounted() {
+            eventBus.$on('on-message', message => {
+                this.message = message
+                console.log(message)
+        }) 
+      },
+      data(){
+        return{
+          message: String
+        }
+      }
+    }),
 
     Vue.component('product-review', {
         template: `
-           
         <form class="review-form" @submit.prevent="onSubmit">
              <p>
                <label for="name">Name:</label>
                <input  id="name" v-model="name" placeholder="name">
              </p>
-            
              <p>
                <label for="review">Review:</label>
                <textarea  id="review" v-model="review"></textarea>
              </p>
-            
              <p>
                <label for="rating">Rating:</label>
                <select  id="rating" v-model.number="rating">
@@ -172,7 +173,7 @@ Vue.component('product', {
                         <input type="radio" value="no" v-model="question">
                     </div>
              <p>
-               <input  type="submit" value="Submit"> 
+               <input type="submit" value="Submit"> 
              </p>
                 <p v-if="errors.length">
                      <b>Please correct the following error(s):</b>
@@ -181,7 +182,6 @@ Vue.component('product', {
                      </ul>
                 </p>
        </form>
-    
  `,
         data() {
             return {
@@ -202,6 +202,7 @@ Vue.component('product', {
                         question: this.question,
                     }
                     eventBus.$emit('review-submitted', productReview)
+                    eventBus.$emit('on-message', 'отправил')
                     this.name = null
                     this.review = null
                     this.rating = null
@@ -213,10 +214,8 @@ Vue.component('product', {
                     if (!this.question) this.errors.push("Question required.")
                 }
             },
-
         }
     }),
-
     Vue.component('product-tabs', {
         props: {
             reviews: {
@@ -224,7 +223,6 @@ Vue.component('product', {
                 required: false
             }
         },
-
         template: `
      <div>   
        <ul>
@@ -252,7 +250,6 @@ Vue.component('product', {
        </div>
      </div>
 `,
-
         data() {
             return {
                 tabs: ['Reviews', 'Make a Review'],
@@ -274,7 +271,6 @@ Vue.component('info-tabs', {
   },
   template: `
     <div>
-    
       <ul>
         <span class="tab" 
               :class="{ activeTab: selectedTab === tab }"
@@ -283,17 +279,14 @@ Vue.component('info-tabs', {
               :key="tab"
         >{{ tab }}</span>
       </ul>
-
       <div v-show="selectedTab === 'Shipping'">
         <p>{{ shipping }}</p>
       </div>
-
       <div v-show="selectedTab === 'Details'">
         <ul>
           <li v-for="detail in details">{{ detail }}</li>
         </ul>
       </div>
-  
     </div>
   `,
   data() {
