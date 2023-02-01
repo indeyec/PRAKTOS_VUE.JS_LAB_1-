@@ -87,6 +87,7 @@ Vue.component(
         this.$emit(
           "add-to-cart",
           this.variants[this.selectedVariant].variantId
+          
         );
         eventBus.$emit("on-message", "Товар добавлен в корзину");
       },
@@ -134,8 +135,9 @@ Vue.component(
   },
   Vue.component("message", {
     template: `
-    <div class="message"
-     v-if="notificationIsShow">
+    <div 
+    class="message" 
+    v-if="notificationIsShow">
         {{ message }}
     </div>
       `,
@@ -144,8 +146,9 @@ Vue.component(
           setTimeout(() => {
             this.message = false
           }, 3000);
+          }
         },
-      },
+        
     mounted() {
       eventBus.$on("on-message", (message) => {
         this.message = message;
