@@ -1,26 +1,28 @@
-let eventBus = new Vue()
-Vue.component('product-details', {
-    props: {
-        details: {
-            type: Array,
-            required: true
-        }
+let eventBus = new Vue();
+Vue.component("product-details", {
+  props: {
+    details: {
+      type: Array,
+      required: true,
     },
-    template: `
+  },
+  template: `
            <ul>
                 <li v-for="detail in details">{{ detail }}</li>
            </ul>
-      `
-})
+      `,
+});
 
-Vue.component('product', {
-        props: {
-            premium: {
-                type: Boolean,
-                required: true
-            }
-        },
-        template: `
+Vue.component(
+  "product",
+  {
+    props: {
+      premium: {
+        type: Boolean,
+        required: true,
+      },
+    },
+    template: `
 	<div class="product">
         <div class="product-image">
             <img :src="image" :alt="altText"/>
@@ -51,101 +53,116 @@ Vue.component('product', {
             <product-tabs :reviews="reviews"></product-tabs>
         </div>
  `,
-        data() {
-            return {
-                product: "Socks",
-                brand: 'Vue Mastery',
-                description: "A pair of warm, fuzzy socks",
-                selectedVariant: 0,
-                link: "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=socks",
-                altText: "A pair of socks",
-                onSale: true,
-                details: ['80% cotton', '20% polyester', 'Gender-neutral'],
-                reviews: [],
-                variants: [
-                    {
-                        variantId: 2234,
-                        variantColor: 'green',
-                        variantImage: "./assets/vmSocks-green-onWhite.jpg",
-                        variantQuantity: 10
-                    },
-                    {
-                        variantId: 2235,
-                        variantColor: 'blue',
-                        variantImage: "./assets/vmSocks-blue-onWhite.jpg",
-                        variantQuantity: 0
-                    }
-                ],
-                sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
-                cart: 0
-            }
-        },
-        methods: {
-            addToCart() {
-                this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId);
-                //this.variant[this.selectedVariant].variantQuantity -=1;
-                eventBus.$emit('on-message', 'добавил')
-            },
-            updateProduct(index) {
-                this.selectedVariant = index;
-                console.log(index);
-            },
-            removeToCart() {
-                this.$emit('remove-to-cart', this.variants[this.selectedVariant].variantId)
-                eventBus.$emit('on-message', 'удалил')
-            },
-        },
-        computed: {
-            title() {
-                return this.brand + ' ' + this.product;
-            },
-            image() {
-                return this.variants[this.selectedVariant].variantImage;
-            },
-            inStock() {
-                return this.variants[this.selectedVariant].variantQuantity
-            },
-            shipping() {
-                if (this.premium) {
-                    return "Free";
-                } else {
-                    return 2.99
-                }
-            },
-            sale() {
-                if (this.onSale) {
-                    return this.brand + ' ' + this.product + ' are on sale'
-                }
-                return this.brand + ' ' + this.product + ' are not sale'
-            }
-        },
-        mounted() {
-            eventBus.$on('review-submitted', productReview => {
-                this.reviews.push(productReview)
-            })
-        }
+    data() {
+      return {
+        product: "Socks",
+        brand: "Vue Mastery",
+        description: "A pair of warm, fuzzy socks",
+        selectedVariant: 0,
+        link: "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=socks",
+        altText: "A pair of socks",
+        onSale: true,
+        details: ["80% cotton", "20% polyester", "Gender-neutral"],
+        reviews: [],
+        variants: [
+          {
+            variantId: 2234,
+            variantColor: "green",
+            variantImage: "./assets/vmSocks-green-onWhite.jpg",
+            variantQuantity: 10,
+          },
+          {
+            variantId: 2235,
+            variantColor: "blue",
+            variantImage: "./assets/vmSocks-blue-onWhite.jpg",
+            variantQuantity: 0,
+          },
+        ],
+        sizes: ["S", "M", "L", "XL", "XXL", "XXXL"],
+        cart: 0,
+      };
     },
-    Vue.component('message',{
-      template:`
-    <div class="message">
-        <p>{{ message }}</p> 
+    methods: {
+      addToCart() {
+        this.$emit(
+          "add-to-cart",
+          this.variants[this.selectedVariant].variantId
+        );
+        eventBus.$emit("on-message", "Товар добавлен в корзину");
+      },
+      updateProduct(index) {
+        this.selectedVariant = index;
+        console.log(index);
+      },
+      removeToCart() {
+        this.$emit(
+          "remove-to-cart",
+          this.variants[this.selectedVariant].variantId
+        );
+        eventBus.$emit("on-message", "Корзина очищена");
+      },
+    },
+    computed: {
+      title() {
+        return this.brand + " " + this.product;
+      },
+      image() {
+        return this.variants[this.selectedVariant].variantImage;
+      },
+      inStock() {
+        return this.variants[this.selectedVariant].variantQuantity;
+      },
+      shipping() {
+        if (this.premium) {
+          return "Free";
+        } else {
+          return 2.99;
+        }
+      },
+      sale() {
+        if (this.onSale) {
+          return this.brand + " " + this.product + " are on sale";
+        }
+        return this.brand + " " + this.product + " are not sale";
+      },
+    },
+    mounted() {
+      eventBus.$on("review-submitted", (productReview) => {
+        this.reviews.push(productReview);
+      });
+    },
+  },
+  Vue.component("message", {
+    template: `
+    <div class="message"
+     v-if="notificationIsShow">
+        {{ message }}
     </div>
       `,
-        mounted() {
-            eventBus.$on('on-message', message => {
-                this.message = message
-                console.log(message)
-        }) 
+      methods:{
+        hideNotification () {
+          setTimeout(() => {
+            this.message = false
+          }, 3000);
+        },
       },
-      data(){
-        return{
-          message: String
-        }
-      }
-    }),
+    mounted() {
+      eventBus.$on("on-message", (message) => {
+        this.message = message;
+        this.hideNotification()
+        
+      });
+    },
+    data() {
+      return {
+        message: String,
+        notificationIsShow: true
+      };
+    },
+  }),
 
-    Vue.component('product-review', {
-        template: `
+  Vue.component("product-review", {
+    template: `
         <form class="review-form" @submit.prevent="onSubmit">
              <p>
                <label for="name">Name:</label>
@@ -183,47 +200,47 @@ Vue.component('product', {
                 </p>
        </form>
  `,
-        data() {
-            return {
-                name: null,
-                review: null,
-                rating: null,
-                question: null,
-                errors: [],
-            }
-        },
-        methods: {
-            onSubmit() {
-                if (this.name && this.review && this.rating) {
-                    let productReview = {
-                        name: this.name,
-                        review: this.review,
-                        rating: this.rating,
-                        question: this.question,
-                    }
-                    eventBus.$emit('review-submitted', productReview)
-                    eventBus.$emit('on-message', 'отправил')
-                    this.name = null
-                    this.review = null
-                    this.rating = null
-                    this.question = null
-                } else {
-                    if (!this.name) this.errors.push("Name required.")
-                    if (!this.review) this.errors.push("Review required.")
-                    if (!this.rating) this.errors.push("Rating required.")
-                    if (!this.question) this.errors.push("Question required.")
-                }
-            },
+    data() {
+      return {
+        name: null,
+        review: null,
+        rating: null,
+        question: null,
+        errors: [],
+      };
+    },
+    methods: {
+      onSubmit() {
+        if (this.name && this.review && this.rating) {
+          let productReview = {
+            name: this.name,
+            review: this.review,
+            rating: this.rating,
+            question: this.question,
+          };
+          eventBus.$emit("review-submitted", productReview);
+          eventBus.$emit("on-message", "Форма отправлена");
+          this.name = null;
+          this.review = null;
+          this.rating = null;
+          this.question = null;
+        } else {
+          if (!this.name) this.errors.push("Name required.");
+          if (!this.review) this.errors.push("Review required.");
+          if (!this.rating) this.errors.push("Rating required.");
+          if (!this.question) this.errors.push("Question required.");
         }
-    }),
-    Vue.component('product-tabs', {
-        props: {
-            reviews: {
-                type: Array,
-                required: false
-            }
-        },
-        template: `
+      },
+    },
+  }),
+  Vue.component("product-tabs", {
+    props: {
+      reviews: {
+        type: Array,
+        required: false,
+      },
+    },
+    template: `
      <div>   
        <ul>
          <span class="tab" 
@@ -250,24 +267,24 @@ Vue.component('product', {
        </div>
      </div>
 `,
-        data() {
-            return {
-                tabs: ['Reviews', 'Make a Review'],
-                selectedTab: 'Reviews'
-            }
-        }
-    }),
-)
+    data() {
+      return {
+        tabs: ["Reviews", "Make a Review"],
+        selectedTab: "Reviews",
+      };
+    },
+  })
+);
 
-Vue.component('info-tabs', {
+Vue.component("info-tabs", {
   props: {
     shipping: {
-      required: true
+      required: true,
     },
     details: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   template: `
     <div>
@@ -291,30 +308,28 @@ Vue.component('info-tabs', {
   `,
   data() {
     return {
-      tabs: ['Shipping', 'Details'],
-      selectedTab: 'Shipping'
-    }
-  }
-})
-
+      tabs: ["Shipping", "Details"],
+      selectedTab: "Shipping",
+    };
+  },
+});
 
 let app = new Vue({
-    el: '#app',
-    data: {
-        premium: true,
-        cart: []
+  el: "#app",
+  data: {
+    premium: true,
+    cart: [],
+  },
+  methods: {
+    updateCart(id) {
+      this.cart.push(id);
     },
-    methods: {
-        updateCart(id) {
-            this.cart.push(id)
-        },
-        removeCart(id) {
-            for (let i = this.cart.length - 1; i >= 0; i--) {
-                if (this.cart[i] === id) {
-                    this.cart.splice(i, 1);
-                }
-            }
+    removeCart(id) {
+      for (let i = this.cart.length - 1; i >= 0; i--) {
+        if (this.cart[i] === id) {
+          this.cart.splice(i, 1);
         }
-    }
-})
-
+      }
+    },
+  },
+});
