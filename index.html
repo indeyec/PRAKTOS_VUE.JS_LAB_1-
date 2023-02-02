@@ -18,15 +18,15 @@
       <div class="cart">
         <p>Cart({{ cart.length }})</p>
       </div>
-
+      <div >
+        <message></message>
+      </div>
       <product
         :premium="premium"
         @add-to-cart="updateCart"
         @remove-to-cart="removeCart"
       ></product>
-      <div class="message">
-        <message class="mes"></message>
-      </div>
+      
     </div>
   </body>
 </html>

@@ -93,7 +93,7 @@ Vue.component(
       },
       updateProduct(index) {
         this.selectedVariant = index;
-        console.log(index);
+        
       },
       removeToCart() {
         this.$emit(
@@ -135,16 +135,19 @@ Vue.component(
   },
   Vue.component("message", {
     template: `
-    <div 
-    class="message" 
-    v-if="notificationIsShow">
+    <div>
+    
+    <div v-if="notificationIsShow"
+    class="message" >
         {{ message }}
+    </div>
+
     </div>
       `,
       methods:{
         hideNotification () {
           setTimeout(() => {
-            this.message = false
+            this.notificationIsShow = false
           }, 3000);
           }
         },
@@ -153,13 +156,13 @@ Vue.component(
       eventBus.$on("on-message", (message) => {
         this.message = message;
         this.hideNotification()
-        
+        this.notificationIsShow =  true
       });
     },
     data() {
       return {
         message: String,
-        notificationIsShow: true
+        notificationIsShow: false
       };
     },
   }),
@@ -266,7 +269,7 @@ Vue.component(
          </ul>
        </div>
        <div v-show="selectedTab === 'Make a Review'">
-         <product-review @review-submitted="addReview"></product-review>
+         <product-review ></product-review>
        </div>
      </div>
 `,
