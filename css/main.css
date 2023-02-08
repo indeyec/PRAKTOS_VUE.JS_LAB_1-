@@ -4,21 +4,66 @@ body {
     margin: 0px;
 }
 
+.message_2{
+    background-color: red;
+    font-size: 20px;
+    margin-left: 10px;
+    margin-top: 50px;
+    border: 2px solid black;
+    width: 270px;
+    border-radius: 50px;
+    color: white;
+    text-align: center;
+    animation: slidein;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
+
+.message_3{
+    background-color: blue;
+    font-size: 20px;
+    margin-left: 10px;
+    margin-top: 50px;
+    border: 2px solid black;
+    width: 270px;
+    border-radius: 50px;
+    color: white;
+    text-align: center;
+    animation: slidein;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
 
 
 
 .message{
     font-size: 20px;
     margin-left: 10px;
-    margin-top: 30px;
+    margin-top: 50px;
     border: 2px solid black;
     width: 270px;
     border-radius: 50px;
     background-color: green;
     color: white;
-    
     text-align: center;
+    animation: slidein;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
 }
+
+@keyframes slidein {
+    from {
+      margin-left: 50%;
+      width: 100%;
+    }
+  
+    to {
+      margin-left: 0%;
+      width: 100%;
+    }
+  }
+
+
 
 .nav-bar {
     background: linear-gradient(-90deg, #84CF6A, #16C0B0);

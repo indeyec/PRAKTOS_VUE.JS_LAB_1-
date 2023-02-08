@@ -89,7 +89,7 @@ Vue.component(
           this.variants[this.selectedVariant].variantId
           
         );
-        eventBus.$emit("on-message", "Товар добавлен в корзину");
+        eventBus.$emit("add-message", "Товар добавлен в корзину");
       },
       updateProduct(index) {
         this.selectedVariant = index;
@@ -100,7 +100,7 @@ Vue.component(
           "remove-to-cart",
           this.variants[this.selectedVariant].variantId
         );
-        eventBus.$emit("on-message", "Корзина очищена");
+        eventBus.$emit("del-message", "Корзина очищена");
       },
     },
     computed: {
@@ -136,12 +136,10 @@ Vue.component(
   Vue.component("message", {
     template: `
     <div>
-    
     <div v-if="notificationIsShow"
     class="message" >
         {{ message }}
     </div>
-
     </div>
       `,
       methods:{
@@ -153,12 +151,13 @@ Vue.component(
         },
         
     mounted() {
-      eventBus.$on("on-message", (message) => {
+      eventBus.$on("add-message", (message) => {
         this.message = message;
         this.hideNotification()
         this.notificationIsShow =  true
       });
     },
+    
     data() {
       return {
         message: String,
@@ -166,6 +165,76 @@ Vue.component(
       };
     },
   }),
+
+
+  Vue.component("message_2", {
+    template: `
+    <div>
+    <div v-if="notificationIsShow"
+    class="message_2" >
+        {{ message_2 }}
+    </div>
+    </div>
+    
+      `,
+      methods:{
+        hideNotification () {
+          setTimeout(() => {
+            this.notificationIsShow = false
+          }, 3000);
+          }
+        },
+        
+    mounted() {
+      eventBus.$on("del-message", (message_2) => {
+        this.message_2 = message_2;
+        this.hideNotification()
+        this.notificationIsShow =  true
+      });
+    },
+    
+    data() {
+      return {
+        message_2: String,
+        notificationIsShow: false
+      };
+    },
+  }),
+
+
+  Vue.component("message_3", {
+    template: `
+    <div>
+    <div v-if="notificationIsShow"
+    class="message_3" >
+        {{ message_3 }}
+    </div>
+    </div>
+      `,
+      methods:{
+        hideNotification () {
+          setTimeout(() => {
+            this.notificationIsShow = false
+          }, 3000);
+          }
+        },
+        
+    mounted() {
+      eventBus.$on("form-message", (message_3) => {
+        this.message_3 = message_3;
+        this.hideNotification()
+        this.notificationIsShow =  true
+      });
+    },
+    
+    data() {
+      return {
+        message_3: String,
+        notificationIsShow: false
+      };
+    },
+  }),
+
 
   Vue.component("product-review", {
     template: `
@@ -225,7 +294,7 @@ Vue.component(
             question: this.question,
           };
           eventBus.$emit("review-submitted", productReview);
-          eventBus.$emit("on-message", "Форма отправлена");
+          eventBus.$emit("form-message", "Форма отправлена");
           this.name = null;
           this.review = null;
           this.rating = null;
